@@ -123,23 +123,41 @@
             })
         }
 
+        const validURL = new RegExp('^(https?:\\/\\/)?' + '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + '((\\d{1,3}\\.){3}\\d{1,3}))' + '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + '(\\?[;&a-z\\d%_.~+=-]*)?' + '(\\#[-a-z\\d_]*)?$', 'i');
+
         function posting() {
             let url = $('#url').val();
             let star = $('#star').val();
             let comment = $('#comment').val();
-            $.ajax({
-                type: 'POST',
-                url: '/movie',
-                data: {
-                    url_give: url,
-                    star_give: star,
-                    comment_give: comment,
-                },
-                success: function (response) {
-                    alert(response['msg']);
-                    window.location.reload();
-                }
-            });
+            if (!url) {
+                alert("Please fill out the movie URL!");
+            } else if (!url.match(validURL)) {
+                alert("Invalid URL!");
+            } else if (!url && !star) {
+                alert("Please fill out the URL and star!");
+            } else if (!url && !comment) {
+                alert("Please fill out the URL and comment!");
+            } else if (!star && !comment) {
+                alert("Please fill out the star and comment!");
+            } else if (!star) {
+                alert("Please fill out the star!");
+            } else if (!comment) {
+                alert("Please fill out the comment!");
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/movie',
+                    data: {
+                        url_give: url,
+                        star_give: star,
+                        comment_give: comment,
+                    },
+                    success: function (response) {
+                        alert(response['msg']);
+                        window.location.reload();
+                    }
+                });
+            }
         }
 
         function open_box() {
@@ -167,7 +185,7 @@
         <div class="mb-3 input-group">
             <label class="input-group-text" for="inputGroupSelect01">Rating</label>
             <select class="form-select" id="star">
-                <option selected>-- Select a rating--</option>
+                <option selected disabled>-- Select a rating--</option>
                 <option value="1">⭐</option>
                 <option value="2">⭐⭐</option>
                 <option value="3">⭐⭐⭐</option>
